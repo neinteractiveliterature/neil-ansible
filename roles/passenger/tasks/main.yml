@@ -1,0 +1,60 @@
+- name: Add Phusion apt key
+  apt_key:
+    keyserver: hkp://keyserver.ubuntu.com:80
+    id: 561F9B9CAC40B2F7
+
+- name: Install packages needed for Phusion apt repository
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - apt-transport-https
+    - ca-certificates
+
+- name: Add Phusion apt repository
+  apt_repository:
+    repo: "deb https://oss-binaries.phusionpassenger.com/apt/passenger {{ ansible_distribution_release }} main"
+    filename: passenger
+
+- name: Install Passenger + Nginx
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - nginx-extras
+    - passenger
+
+- name: Install nginx.conf
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - reload nginx configuration
+
+- name: Install php_site.conf
+  template:
+    src: php_site.conf.j2
+    dest: /etc/nginx/php_site.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - reload nginx configuration
+
+- name: Install tls_site.conf
+  template:
+    src: tls_site.conf.j2
+    dest: /etc/nginx/tls_site.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - reload nginx configuration
+
+- name: Generate /etc/nginx/dhparam.pem
+  command: openssl dhparam -out /etc/nginx/dhparam.pem 2048 creates=/etc/nginx/dhparam.pem
+  notify:
+    - reload nginx configuration

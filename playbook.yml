@@ -15,3 +15,5 @@
   roles:
     - role: basic
     - role: postfix
+    - role: passenger
+    - role: certbot
