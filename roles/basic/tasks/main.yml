@@ -1,0 +1,61 @@
+- name: apt-get update
+  apt: update_cache=yes
+
+- name: install basic networking tools
+  apt: pkg={{ item }} state=installed
+  with_items:
+    - lsof
+    - iptables
+    - jwhois
+    - whois
+    - curl
+    - wget
+    - rsync
+    - traceroute
+    - iputils-ping
+    - netcat-openbsd
+    - tcptraceroute
+    - tcputils
+    - tcpdump
+    - elinks
+
+- name: install build-essential
+  apt: pkg=build-essential state=installed
+
+- name: create core groups
+  group: name={{ item.name }} state=present
+  with_items:
+    - { name: "admin" }
+    - { name: "ssl-cert" }
+    - { name: "www-data" }
+
+- name: create user accounts
+  user: name={{ item.name }} state=present home={{ item.home | default(omit) }} groups={{ item.groups | default(omit) }} shell={{ item.shell | default(omit) }}
+  with_items:
+    - "{{ users }}"
+
+- name: add authorized SSH keys to users
+  authorized_key: user={{ item.0.name }} key="{{ lookup('file', 'public_keys/' + item.1) }}"
+  with_subelements:
+    - "{{ users }}"
+    - authorized_keys
+    - skip_missing: true
+
+- name: allow the admin group to sudo
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: "^%admin ALL="
+    line: "%admin ALL=(ALL) NOPASSWD: ALL"
+    validate: "/usr/sbin/visudo -cf %s"
+
+- name: allow deploy to restart PHP
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: "deploy.*restart php"
+    line: "deploy ALL=(root) NOPASSWD: /bin/systemctl restart php7.0-fpm"
+    validate: "/usr/sbin/visudo -cf %s"
+
+- name: Enable UFW and allow OpenSSH
+  ufw: state=enabled policy=deny rule=allow name=OpenSSH

@@ -1,0 +1,33 @@
+users:
+  - name: "www-data"
+    home: "/var/www"
+    groups: "ssl-cert"
+
+  - name: "deploy"
+    home: "/var/www"
+    groups: "www-data"
+    authorized_keys: ["nbudin", "btannenbaum", "dkapell", "tlasko", "jdiewald", "quinnd"]
+
+  - name: "git"
+    shell: "/usr/bin/git-shell"
+
+  - name: "nbudin"
+    groups: "admin"
+    authorized_keys: ["nbudin"]
+
+  - name: "btannenbaum"
+    groups: "admin"
+    authorized_keys: ["btannenbaum"]
+
+  - name: "dkapell"
+    groups: "admin"
+    authorized_keys: ["dkapell"]
+
+  - name: "tlasko"
+    authorized_keys: ["tlasko"]
+
+  - name: "jdiewald"
+    authorized_keys: ["jdiewald"]
+
+  - name: "quinnd"
+    authorized_keys: ["quinnd"]

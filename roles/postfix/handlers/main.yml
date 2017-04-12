@@ -1,0 +1,7 @@
+- name: postmap virtual
+  command: postmap hash:/etc/postfix/virtual
+
+- name: restart postfix
+  service:
+    name: postfix
+    state: restarted

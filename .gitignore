@@ -1,0 +1,5 @@
+/public_keys
+/ansible-vault-secret
+/.bundle
+/*.log
+/.vagrant

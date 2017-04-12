@@ -1,0 +1,5 @@
+{% for domain_with_aliases in postfix_virtual_aliases|dictsort %}
+{% for alias in domain_with_aliases[1]|dictsort %}
+{{ alias[0] }}@{{ domain_with_aliases[0] }} {{ alias[1] }}
+{% endfor %}
+{% endfor %}

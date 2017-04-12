@@ -1,0 +1,5 @@
+dependencies:
+  - role: jnv.unattended-upgrades
+    unattended_origins_patterns:
+    - 'origin=Ubuntu,archive=${distro_codename}-security'
+    unattended_mail: 'webmaster@interactiveliterature.org'

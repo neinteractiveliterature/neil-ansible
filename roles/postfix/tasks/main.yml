@@ -1,0 +1,58 @@
+- debconf:
+    name: postfix
+    question: postfix/destinations
+    value: interactiveliterature.org, interconlarp.org, o.interconlarp.org, p.interconlarp.org, q.interconlarp.org, vps1.interconlarp.org, localhost, vps
+    vtype: string
+
+- debconf:
+    name: postfix
+    question: postfix/main_mailer_type
+    value: Internet with smarthost
+    vtype: select
+
+- debconf:
+    name: postfix
+    question: postfix/relayhost
+    value: "{{ postfix_relayhost }}"
+    vtype: string
+
+- name: Install Postfix
+  apt: name=postfix state=installed
+
+- lineinfile:
+    destfile: /etc/postfix/main.cf
+    regexp: '^smtp_sasl_auth_enable\W'
+    line: 'smtp_sasl_auth_enable = yes'
+  notify: restart postfix
+
+- lineinfile:
+    destfile: /etc/postfix/main.cf
+    regexp: '^smtp_sasl_security_options\W'
+    line: 'smtp_sasl_security_options = noanonymous'
+  notify: restart postfix
+
+- lineinfile:
+    destfile: /etc/postfix/main.cf
+    regexp: '^smtp_sasl_password_maps\W'
+    line: 'smtp_sasl_password_maps = static:{{ postfix_sasl_user }}:{{ postfix_sasl_password }}'
+  notify: restart postfix
+
+- lineinfile:
+    destfile: /etc/postfix/main.cf
+    regexp: '^virtual_alias_maps\W'
+    line: 'virtual_alias_maps = hash:/etc/postfix/virtual'
+  notify: restart postfix
+
+- name: write postfix virtual alias maps
+  template:
+    src: virtual.j2
+    dest: /etc/postfix/virtual
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - postmap virtual
+    - restart postfix
+
+- name: Allow SMTP connections
+  ufw: rule=allow name=Postfix

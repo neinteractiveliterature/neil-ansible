@@ -1,0 +1,3 @@
+# dependencies:
+#   - role: tersmitten.postfix
+#     postfix_hostname: "interactiveliterature.org, interconlarp.org, o.interconlarp.org, p.interconlarp.org, q.interconlarp.org, vps1.interconlarp.org, localhost, vps1"

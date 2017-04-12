@@ -1,0 +1,17 @@
+# Install Python 2.7 on hosts running Ubuntu Xenial (because Ansible doesn't yet support Python 3)
+- hosts: xenials
+  gather_facts: False
+  tasks:
+    - name: apt-get update
+      raw: apt-get update -qq
+    - name: Install python 2.7
+      raw: apt-get install -qq python2.7
+
+- hosts: all
+  tasks:
+    - include_vars: postfix-secrets.yml
+
+- hosts: all
+  roles:
+    - role: basic
+    - role: postfix
