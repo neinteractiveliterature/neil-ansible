@@ -1,0 +1,21 @@
+- debconf:
+    name: mysql-server
+    question: mysql-server/root_password
+    value: ""
+    vtype: password
+
+- debconf:
+    name: mysql-server
+    question: mysql-server/root_password_again
+    value: ""
+    vtype: password
+
+- name: Install MySQL packages
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - mysql-server
+    - mysql-client
+    - libmysqlclient-dev
+    - python-mysqldb
