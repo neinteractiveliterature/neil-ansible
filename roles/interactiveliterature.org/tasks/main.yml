@@ -1,0 +1,80 @@
+- name: Create directories
+  file:
+    state: directory
+    path: "{{ item }}"
+    owner: deploy
+    group: deploy
+    mode: 0755
+  with_items:
+    - "/var/www/interactiveliterature.org"
+    - "/var/www/interactiveliterature.org/NEIL"
+    - "/var/www/interactiveliterature.org/NELCO"
+
+- name: Install static files
+  copy:
+    src: "{{ item }}"
+    dest: "/var/www/interactiveliterature.org/{{ item }}"
+    owner: deploy
+    group: deploy
+    mode: 0644
+  with_items:
+    - favicon.ico
+    - favicon.gif
+    - index.html
+    - robots.txt
+
+- name: Ensure Intercode 1 deploy directories exist
+  file:
+    state: directory
+    path: "/var/www/intercon-{{ item | lower }}"
+    owner: deploy
+    group: deploy
+    mode: 0755
+  with_items: "{{ intercode1_sites }}"
+
+- name: Create symlinks to Intercode 1 deploy directories
+  file:
+    state: link
+    src: "/var/www/intercon-{{ item | lower }}/current/src"
+    path: "/var/www/interactiveliterature.org/{{ item }}"
+    owner: deploy
+    group: deploy
+    force: true
+  with_items: "{{ intercode1_sites }}"
+
+- name: Ensure PayPal integration directory exists
+  file:
+    state: directory
+    path: "/var/www/paypal-integration"
+    owner: deploy
+    group: deploy
+    mode: 0755
+
+- name: Create symlink to PayPal integration code
+  file:
+    state: link
+    src: "/var/www/paypal-integration/current/src"
+    path: "/var/www/interactiveliterature.org/paypal-integration"
+    owner: deploy
+    group: deploy
+    force: true
+
+- name: Create nginx config for interactiveliterature.org
+  template:
+    src: interactiveliterature.org.j2
+    dest: /etc/nginx/sites-available/interactiveliterature.org
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart nginx
+
+- name: Enable nginx config for interactiveliterature.org
+  file:
+    state: link
+    src: /etc/nginx/sites-available/interactiveliterature.org
+    path: /etc/nginx/sites-enabled/interactiveliterature.org
+    owner: root
+    group: root
+  notify:
+    - restart nginx

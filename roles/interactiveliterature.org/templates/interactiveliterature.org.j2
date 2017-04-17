@@ -1,0 +1,12 @@
+server {
+  listen   80;
+  listen   [::]:80;
+  server_name  vps1.interconlarp.org interactiveliterature.org www.interactiveliterature.org;
+
+  root   /var/www/interactiveliterature.org;
+
+  index index.php index.html;
+  add_header X-Clacks-Overhead "GNU Terry Pratchett";
+
+  include php_site.conf;
+}

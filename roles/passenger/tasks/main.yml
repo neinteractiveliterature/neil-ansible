@@ -32,7 +32,7 @@
     group: root
     mode: 0644
   notify:
-    - reload nginx configuration
+    - restart nginx
 
 - name: Install php_site.conf
   template:
@@ -42,7 +42,7 @@
     group: root
     mode: 0644
   notify:
-    - reload nginx configuration
+    - restart nginx
 
 - name: Install tls_site.conf
   template:
@@ -52,9 +52,9 @@
     group: root
     mode: 0644
   notify:
-    - reload nginx configuration
+    - restart nginx
 
 - name: Generate /etc/nginx/dhparam.pem
   command: openssl dhparam -out /etc/nginx/dhparam.pem 2048 creates=/etc/nginx/dhparam.pem
   notify:
-    - reload nginx configuration
+    - restart nginx
