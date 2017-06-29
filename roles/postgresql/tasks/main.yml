@@ -17,3 +17,11 @@
     mode: 0640
   notify:
     - restart postgresql
+
+- name: Install Backupninja configuration
+  template:
+    src: 20.pgsql.j2
+    dest: /etc/backup.d/20.pgsql
+    owner: root
+    group: root
+    mode: 0600

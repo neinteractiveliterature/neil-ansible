@@ -59,3 +59,16 @@
 
 - name: Enable UFW and allow OpenSSH
   ufw: state=enabled policy=deny rule=allow name=OpenSSH
+
+- name: Ensure Backupninja is installed
+  apt:
+    name: backupninja
+    state: present
+
+- name: Configure Backupninja
+  template:
+    src: backupninja.conf.j2
+    dest: /etc/backupninja.conf
+    owner: root
+    group: root
+    mode: 0644

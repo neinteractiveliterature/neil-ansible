@@ -1,0 +1,12 @@
+databases   = all
+backupdir   = /var/backups/mysql
+hotcopy     = no
+sqldump     = yes
+compress    = yes
+
+# Trying to dump information_schema seems to cause issues, and has no real value
+nodata = information_schema.global_status information_schema.session_status
+
+dbusername = root
+dbpassword =
+dbhost = localhost

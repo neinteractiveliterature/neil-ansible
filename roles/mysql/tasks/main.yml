@@ -19,3 +19,11 @@
     - mysql-client
     - libmysqlclient-dev
     - python-mysqldb
+
+- name: Install Backupninja configuration
+  template:
+    src: 20.mysql.j2
+    dest: /etc/backup.d/20.mysql
+    owner: root
+    group: root
+    mode: 0600
