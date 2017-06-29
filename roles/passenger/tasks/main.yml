@@ -58,3 +58,8 @@
   command: openssl dhparam -out /etc/nginx/dhparam.pem 2048 creates=/etc/nginx/dhparam.pem
   notify:
     - restart nginx
+
+- name: Allow connections in UFW
+  ufw:
+    rule: allow
+    app: Nginx Full
