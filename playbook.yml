@@ -1,11 +1,9 @@
-# Install Python 2.7 on hosts running Ubuntu Xenial (because Ansible doesn't yet support Python 3)
-- hosts: xenials
+- hosts: all
   gather_facts: False
+
   tasks:
-    - name: apt-get update
-      raw: apt-get update -qq
-    - name: Install python 2.7
-      raw: apt-get install -qq python2.7
+  - name: Ensure Python is installed
+    raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
 
 - hosts: all
   tasks:

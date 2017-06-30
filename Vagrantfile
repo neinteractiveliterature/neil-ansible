@@ -72,11 +72,7 @@ Vagrant.configure(2) do |config|
     ansible.sudo = true
     ansible.groups = {
       "webservers" => ["default"],
-      "dbservers" => ["default"],
-      "xenials" => ["default"],
-      "xenials:vars" => {
-        "ansible_python_interpreter" => "/usr/bin/python2.7"
-      }
+      "dbservers" => ["default"]
     }
     ansible.vault_password_file = "ansible-vault-secret"
     #ansible.verbose = 'vvvv'
