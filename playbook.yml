@@ -19,4 +19,5 @@
     - role: certbot
     - role: mysql
     - role: postgresql
+    - role: elasticsearch
     - role: interactiveliterature.org

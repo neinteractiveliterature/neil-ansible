@@ -1,0 +1,59 @@
+- name: Add Elastic apt key
+  apt_key:
+    keyserver: hkp://pgp.mit.edu
+    id: D88E42B4
+
+- name: Install packages needed for Elastic apt repository
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - apt-transport-https
+    - ca-certificates
+
+- name: Add Elastic apt repository
+  apt_repository:
+    repo: "deb https://artifacts.elastic.co/packages/5.x/apt stable main"
+    filename: elastic
+
+- name: Install Java and Elasticsearch
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - openjdk-8-jdk-headless
+    - elasticsearch
+
+- name: Set min heap size
+  lineinfile:
+    dest: /etc/elasticsearch/jvm.options
+    state: present
+    regexp: "^-Xms"
+    line: "-Xms512m"
+  notify:
+    - restart elasticsearch
+
+- name: Set max heap size
+  lineinfile:
+    dest: /etc/elasticsearch/jvm.options
+    state: present
+    regexp: "^-Xmx"
+    line: "-Xmx512m"
+  notify:
+    - restart elasticsearch
+
+- name: Disable auto index creation
+  lineinfile:
+    dest: /etc/elasticsearch/elasticsearch.yml
+    state: present
+    regexp: "^action\\.auto_create_index:"
+    line: "action.auto_create_index: false"
+  notify:
+    - restart elasticsearch
+
+- name: Enable Elasticsearch service
+  systemd:
+    name: elasticsearch
+    daemon_reload: yes
+    enabled: yes
+    state: started
